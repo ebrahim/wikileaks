@@ -1,0 +1,59 @@
+#!/usr/bin/python
+
+# In the name of God
+# This code is public domain
+
+from sys import argv
+from pytagcloud import create_tag_image, create_html_data, make_tags
+
+def defscale(count, mincount, maxcount, minsize, maxsize):
+    return minsize + (maxsize - minsize) * ((count - mincount) / float(maxcount - mincount)) ** 1.5
+
+class Generator:
+	def __init__(self, input_filename, output_filename):
+		self.font = '/usr/share/fonts/truetype/ttf-dejavu/DejaVuSerif.ttf'
+		self.fontzoom = 2
+		self.size = (800, 600)
+		self.words = {}
+		infile = open(input_filename, 'r')
+		remained = 150
+		while infile and remained > 0:
+			line = infile.readline()
+			parts = line.split()
+			if len(parts) != 2:
+				break
+			self.words[parts[1]] = int(parts[0])
+			remained = remained - 1
+		self.output_filename = output_filename
+
+	def generate(self):
+		self.tags = make_tags(self.words, minsize=6, maxsize=42, scalef=defscale)
+		if self.output_filename.endswith('.png'):
+			create_tag_image(self.tags, file=self.output_filename, size=self.size, fontname=self.font, background=(0, 0, 0, 0), fontzoom=self.fontzoom, vertical=False, crop=True, rectangular=False)
+		else:
+			data = create_html_data(self.tags, size=self.size, fontname=self.font, fontzoom=self.fontzoom)
+			outfile = open(self.output_filename, 'w')
+			outfile.write("""<html>
+<head>
+<title>Word Cloud</title>
+<style>
+body{background-color: black;}
+.tag{position: absolute;}
+a{text-decoration: none;}""")
+			for style in data['css']:
+				outfile.write(style)
+				outfile.write('\n')
+			outfile.write("</style>\n</head>\n<body>\n")
+			for link in data['links']:
+				outfile.write('<a class="tag %(cls)s" style="top: %(top)dpx; left: %(left)dpx; font-size: %(size)dpx;">%(tag)s</a>\n' % link)
+			outfile.write("</body>\n")
+
+# entry point
+if len(argv) != 3:
+	print "Usage: cable-word-cloud counts-file output-file\n"
+	print "  counts-file must contain lines with count and word separated by whitespace"
+	print "  output-file can end with '.png' to produce an image, or anything else for HTML output"
+	exit(1)
+
+generator = Generator(argv[1], argv[2])
+generator.generate()

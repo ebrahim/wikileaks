@@ -1,15 +1,19 @@
-In the name of God
+==============================================================================
+                             In the name of God
+==============================================================================
 
 cable-word-counter is a tool to count unique words in WikiLeaks US Embassy
 Cables HTML files. It takes names of HTML files as arguments and outputs a
 list of count-word pairs.
 
-Example usage:
-$ cd ~/wikileaks
+==============================================================================
+
+Example usage of cable-word-counter:
+$ cd ~/cablegate-201012081854
 $ ls
 articles  cable  classification  date  origin  reldate  static  tag
 $ cd cable
-$ ~/bin/cable-word-counter `find -name '*.html'` >words-count.txt
+$ ~/wikileaks/cable-word-counter `find -name '*.html'` >words-count.txt
 $ head words-count.txt
    4685 iran
    4097 government
@@ -22,4 +26,27 @@ $ head words-count.txt
    2539 support
    2319 new
 
-The code is public domain.
+==============================================================================
+
+cable-word-cloud is a word cloud generator using PyTagCloud to visualize
+output of cable-word-counter. It takes two file names as argument:
+1. A text file containing output of cable-word-counter.
+2. A file name for output, which will be a PNG file if the name ends with
+   '.png', and an HTML file otherwise. 
+
+==============================================================================
+
+Example usage of cable-word-cloud:
+$ pwd
+/home/ebrahim/cablegate-201012081854/cable
+$ ~/wikileaks/cable-word-cloud words-count.txt word-cloud.png
+[ long wait with no output on screen, but word-cloud.png is ready. ]
+$ ~/wikileaks/cable-word-cloud words-count.txt word-cloud.html
+[ long wait again with no output on screen, but word-cloud.html is ready. ]
+
+==============================================================================
+
+The source code of all tools are public domain.
+Feel free to contact me: ebrahim@mohammadi.ir
+
+==============================================================================
