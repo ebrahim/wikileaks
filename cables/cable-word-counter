@@ -20,10 +20,15 @@ trap "rm $contents" EXIT TERM INT
 
 for cable in "$@"
 do
-	grep '<pre>' "$cable" | tail -n 1 >>"$contents"
+	if head "$cable" | grep -i '<html' &>/dev/null		# If it is an HTML file
+	then
+		grep '<pre>' "$cable" | tail -n 1 >>"$contents"
+	else
+		cat "$cable" >>"$contents"
+	fi
 done
 
-sed 's!</\?[^>]*>\([^<]*\)!\L\1!g' -i "$contents"		# Strip HTML tags and convert to lowercase
+sed 's!\(</\?[^>]*>\)\?\([^<]*\)!\L\2!g' -i "$contents"		# Strip HTML tags (if any) and convert to lowercase
 #sed 's/c o n f i d e n t i a l/confidential/g' -i "$contents"
 #sed 's/s e c r e t/secret/g' -i "$contents"
 sed 's/[^a-z]\+/\n/g' -i "$contents"		# Convert all non-alphabetic character sequences into new lines
