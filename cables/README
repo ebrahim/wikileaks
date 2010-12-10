@@ -1,0 +1,25 @@
+In the name of God
+
+cable-word-counter is a tool to count unique words in WikiLeaks US Embassy
+Cables HTML files. It takes names of HTML files as arguments and outputs a
+list of count-word pairs.
+
+Example usage:
+$ cd ~/wikileaks
+$ ls
+articles  cable  classification  date  origin  reldate  static  tag
+$ cd cable
+$ ~/bin/cable-word-counter `find -name '*.html'` >words-count.txt
+$ head words-count.txt
+   4685 iran
+   4097 government
+   3685 president
+   3176 security
+   2915 political
+   2682 minister
+   2674 ambassador
+   2556 military
+   2539 support
+   2319 new
+
+The code is public domain.
